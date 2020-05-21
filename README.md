@@ -1,4 +1,4 @@
-# Run web socket server
+# Run web-socket server
 1. cd server
 2. npm start
 
