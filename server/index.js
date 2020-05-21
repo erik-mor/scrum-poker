@@ -11,7 +11,6 @@ const io = socketio(server);
 
 const { addUser, removeUser, getUser, getUsersInRoom, setVote } =  require('./helper')
 
-
 io.on('connection', (socket) => {
     console.log('New connection established.')
 
@@ -34,6 +33,26 @@ io.on('connection', (socket) => {
         io.to(vote.id).emit('connectedUsers', { users: getUsersInRoom(vote.id) });
     });
 
+    socket.on('create', () => {
+        const user = getUser(socket.id);
+
+        getUsersInRoom(user.room).map((user) => {
+            user.hasVoted = false;
+            user.vote = null;
+            return user;
+        })
+        io.to(user.room).emit('onCreate');
+        io.to(user.room).emit('connectedUsers', { users: getUsersInRoom(user.room) });
+
+    });
+
+    socket.on('show', () => {
+
+        const user = getUser(socket.id);
+
+        io.to(user.room).emit('onShow');
+
+    });
 
     socket.on('disconnect', () => {
 
@@ -42,8 +61,6 @@ io.on('connection', (socket) => {
             console.log(`User ${userToRemove.name} has left`);
             io.to(userToRemove.room).emit('connectedUsers', { users: getUsersInRoom(userToRemove.room) });
         }
-
-
     });
 });
 

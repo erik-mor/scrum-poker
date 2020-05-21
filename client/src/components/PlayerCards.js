@@ -1,9 +1,9 @@
 import React from 'react';
-import Card from './CreatePlayerCard';
+import Card from './PlayerCard';
 
 const PlayerCards = (props) => {
     return props.cards.map(card => (
-        <Card key={card.id} user={card.name} hasVoted={card.hasVoted}/>
+        <Card key={card.id} user={card.name} hasVoted={card.hasVoted} vote={card.vote}/>
     ));
 }
 
