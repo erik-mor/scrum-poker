@@ -13,6 +13,7 @@ let socket;
 const SessionDetail = ({ match }) => {
 
     const btn = useRef();
+    const [isMaster, setIsMaster] = useState(false);
     const [show, setShow] = useContext(ShowContext);
     const [name, setName] = useContext(UserContext);
     const [sessionId, setSessionId] = useState('');
@@ -70,12 +71,15 @@ const SessionDetail = ({ match }) => {
             socket.on('connectedUsers', ({users}) => {
                 setUsers(users);
             })
+
+            socket.on('isMaster', () => {
+                setIsMaster(true);
+            }) ;
         }
     });
 
     const sendVote = (value) => {
-        console.log('Send vote', value);
-
+        
         setCards(cards.map(card => {
             if (card.value === value) {
                 card.isSet = true;
@@ -102,7 +106,7 @@ const SessionDetail = ({ match }) => {
             <PlayerCards cards={users} />
             </div>
 
-            <Button ref={btn} variant="primary" onClick={handleClick}>Show cards</Button>
+            <Button ref={btn} variant="primary" onClick={handleClick} disabled={!isMaster}>Show cards</Button>
 
             <div style={{ display: "flex", justifyContent: "left", marginTop: "40px" }}>
             <GameCards display={!show} sendVote={sendVote} cards={cards} />

@@ -22,7 +22,6 @@ export default function Dailog(props) {
 
     const handleClose = () => {
         if (name !== '') {
-            console.log(name);
             setUserName(name);
             setOpen(false);
         }

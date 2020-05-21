@@ -1,5 +1,4 @@
-import React, {useEffect} from 'react';
-import './App.css';
+import React from 'react';
 import CreateSessionForm from './components/CreateSessionForm';
 import SessionDetail from './components/SessionDetail';
 import Nav from './components/Nav/Nav';

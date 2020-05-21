@@ -18,11 +18,17 @@ io.on('connection', (socket) => {
     socket.on('join', ({name, id}) => {
         console.log(name, id);
         
-        addUser(socket.id, name, id)
+        addUser(socket.id, name, id)    
+
+        const users = getUsersInRoom(id);
+
+        if (users.length === 1) {
+            socket.emit('isMaster');
+        }
 
         socket.join(id);
 
-        io.to(id).emit('connectedUsers', { users: getUsersInRoom(id) });
+        io.to(id).emit('connectedUsers', { users });
 
     });
 
