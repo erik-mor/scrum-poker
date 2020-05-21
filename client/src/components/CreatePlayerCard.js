@@ -1,11 +1,11 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
 
-const CreateCard = (props) => {
+const CreatePlayerCard = (props) => {
 
     return(
       <div>
-        <Card border="primary" style={{ width: '6rem', height: '9rem' }}>
+        <Card bg={props.hasVoted ? "primary" : "light"} border="primary" style={{ width: '6rem', height: '9rem', margin: "30px 5px 5px 5px"}}>
         <Card.Body>
           <Card.Text>
           </Card.Text>
@@ -17,4 +17,4 @@ const CreateCard = (props) => {
         )
 }
 
-export default CreateCard;
+export default CreatePlayerCard;

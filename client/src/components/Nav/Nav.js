@@ -9,7 +9,7 @@ const Nav = () => {
   const [userName, setUserName] = useContext(UserContext);
 
   return (
-    <nav>
+    <nav className="nav">
       <div className="logo">
         <Link to='/'>
           <h4>Logo</h4> 

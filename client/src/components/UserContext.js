@@ -8,7 +8,6 @@ export const UserProvider = props => {
 
   useEffect(() => {
     let name = sessionStorage.getItem('userName');
-    console.log(`eseEffect. from storage: ${name}, state: ${userName}`);
     if(name !== null) {
       setUserName(name);
     } else {

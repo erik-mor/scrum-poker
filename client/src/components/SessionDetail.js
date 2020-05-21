@@ -3,8 +3,8 @@ import queryString from 'query-string';
 import io from 'socket.io-client'
 import Dialog from './Dialog'
 import {UserContext} from './UserContext'
-import Card from './Card/CreateCard.js'
-import Cards from './SetCards'
+import PlayerCards from './PlayerCards'
+import GameCards from './GameCards'
 
 let socket;
 
@@ -15,6 +15,18 @@ const SessionDetail = ({ match, location }) => {
     const [vote, setVote] = useState('');
     const [users, setUsers] = useState([]);
     const [votes, setVotes] = useState([]);
+    const [cards, setCards] = useState([
+        {
+           id: 1,
+           value: "1",
+           isSet: false
+        }, 
+        {
+            id: 2,
+            value: "2",
+            isSet: false
+        }
+    ]);
 
     const ENDPOINT = 'localhost:5000';
 
@@ -36,31 +48,42 @@ const SessionDetail = ({ match, location }) => {
 
     useEffect(() => {
         if (name !== '') {
-            console.log('Here')
             socket.on('onVote', vote => {
                 setVotes([...votes, vote]);
             });
 
             socket.on('connectedUsers', ({users}) => {
-                console.log('Setting users');
                 setUsers(users);
             })
         }
     });
 
-    const sendVote = (e) => {
-        e.preventDefault();
-        socket.emit('vote', {user: name, id: sessionId, value: 'voted'});
-    }   
+    const sendVote = (value) => {
+        console.log('Send vote', value);
 
-    console.log(votes, users);
+        setCards(cards.map(card => {
+            if (card.value === value) {
+                card.isSet = true;
+            } else {
+                card.isSet = false;
+            }
+            return card;
+        }));       
+
+        socket.emit('vote', {value, id: sessionId});
+    }   
 
     return (
         <div>
-            <h1>id: {sessionId}</h1>
-            <h1>name: {name} </h1>
 
-            <Cards cards={users} />
+            <div style={{ display: "flex", justifyContent: "left" }}>
+             <PlayerCards cards={users} />
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "left", marginTop: "40px" }}>
+             <GameCards sendVote={sendVote} cards={cards} />
+            </div>
+
 
             <Dialog />
         </div>

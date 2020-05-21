@@ -9,7 +9,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 
-const { addUser, removeUser, getUser, getUsersInRoom } =  require('./helper')
+const { addUser, removeUser, getUser, getUsersInRoom, setVote } =  require('./helper')
 
 
 io.on('connection', (socket) => {
@@ -23,22 +23,26 @@ io.on('connection', (socket) => {
 
         socket.join(id);
 
-        console.log(getUsersInRoom(id));
-
         io.to(id).emit('connectedUsers', { users: getUsersInRoom(id) });
 
     });
 
     socket.on('vote', vote => {
 
-        io.to(vote.id).emit('onVote', {user: vote.user, value: vote.value});
+        setVote(socket.id, vote.value);
+
+        io.to(vote.id).emit('connectedUsers', { users: getUsersInRoom(vote.id) });
     });
 
 
     socket.on('disconnect', () => {
 
-        console.log(`User has left`);
-        removeUser(socket.id);
+        const userToRemove = removeUser(socket.id);
+        if (userToRemove) {
+            console.log(`User ${userToRemove.name} has left`);
+            io.to(userToRemove.room).emit('connectedUsers', { users: getUsersInRoom(userToRemove.room) });
+        }
+
 
     });
 });
