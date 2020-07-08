@@ -6,7 +6,7 @@ import {UserContext} from '../UserContext'
 
 const Nav = () => {
 
-  const [userName, setUserName] = useContext(UserContext);
+  const [userName] = useContext(UserContext);
 
   return (
     <nav className="nav">

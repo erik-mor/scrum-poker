@@ -3,12 +3,15 @@ let users = [];
 const addUser = (id, name, room ) => {
  
   const existingUser = users.find((user) => user.room === room && user.name === name);
-
+  let user = {};
   if (!existingUser) {
-    const user = { id, name, room, hasVoted: false, vote: null };
+    user = { id, name, room, hasVoted: false, vote: null, isRedundant: false };
 
-    users.push(user);
+  } else {
+    user = { id, name, room, hasVoted: false, vote: null, isRedundant: true };
   }
+  users.push(user);
+
 }
 
 const removeUser = (id) => {
@@ -18,8 +21,9 @@ const removeUser = (id) => {
 }
 
 const setVote = (id, vote) => {
+    let x = getUser(id);
     users.map((user) => {
-        if (user.id === id) {
+        if (user.name === x.name) {
             user.hasVoted = true;
             user.vote = vote;
         }

@@ -7,12 +7,12 @@ export const UserProvider = props => {
   const [userName, setUserName] = useState('');
 
   useEffect(() => {
-    let name = sessionStorage.getItem('userName');
+    let name = localStorage.getItem('userName');
     if(name !== null) {
       setUserName(name);
     } else {
         if (userName !== '') {
-            sessionStorage.setItem('userName', userName);
+            localStorage.setItem('userName', userName);
         }
     }
 

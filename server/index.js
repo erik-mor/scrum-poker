@@ -13,7 +13,8 @@ const { addUser, removeUser, getUser, getUsersInRoom, setVote } =  require('./he
 
 io.on('connection', (socket) => {
     console.log('New connection established.')
-
+    
+    console.log(io.sockets.connected)
     
     socket.on('join', ({name, id}) => {
         console.log(name, id);

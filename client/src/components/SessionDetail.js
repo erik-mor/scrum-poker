@@ -18,7 +18,6 @@ const SessionDetail = ({ match }) => {
     const [name, setName] = useContext(UserContext);
     const [sessionId, setSessionId] = useState('');
     const [users, setUsers] = useState([]);
-    const [votes, setVotes] = useState([]);
     const [cards, setCards] = useState([
         {
            id: 1,
@@ -35,13 +34,13 @@ const SessionDetail = ({ match }) => {
     const ENDPOINT = 'localhost:5000';
 
     useEffect(() => {
-        console.log(show);
         const id = match.params.id;
         setSessionId(id);
 
         if (name !== '') {
             socket = io(ENDPOINT);
             socket.emit('join', {name, id});
+            console.log(socket);
 
             return () => {
                 socket.emit('disconnect');
@@ -51,32 +50,49 @@ const SessionDetail = ({ match }) => {
         
     },[name, ENDPOINT, match.params.id]);
 
+    useEffect(() => {   
+        if (name !== '') {
+            socket.on('connectedUsers', ({users}) => {
+                setUsers(users);
+                updateGameCards(users);
+            })
+        }
+    },[name]);
+
     useEffect(() => {
         if (name !== '') {
             socket.on('onCreate', () => {
                 btn.current.innerText = 'Show cards';
                 setShow(false);
-                setCards(cards.map(card => {
-                    card.isSet = false; 
-                    return card;
-                }));       
-        
+
             });
 
             socket.on('onShow', () => {
                 btn.current.innerText = 'Create a new game';
                 setShow(true);
             });
+        }
+    },[name]);
 
-            socket.on('connectedUsers', ({users}) => {
-                setUsers(users);
-            })
-
+    useEffect(() => {
+        if (name !== '') {
             socket.on('isMaster', () => {
                 setIsMaster(true);
-            }) ;
+            });
         }
-    });
+    },[name]);
+
+    const updateGameCards = (currentUsers) => {
+        const user = currentUsers.find(user => user.name === name);
+        setCards(cards.map(card => {
+            if (card.value === user.vote) {
+                card.isSet = true;
+            } else {
+                card.isSet = false;
+            }
+            return card;
+        }));       
+    }
 
     const sendVote = (value) => {
         
@@ -97,6 +113,11 @@ const SessionDetail = ({ match }) => {
             socket.emit('create');
         } else {
             socket.emit('show');
+            setCards(cards.map(card => {
+                card.isSet = false; 
+                return card;
+            }));       
+
         }
     }
 

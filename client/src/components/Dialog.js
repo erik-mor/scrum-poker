@@ -9,6 +9,8 @@ import { UserContext } from './UserContext'
 
 export default function Dailog(props) {
 
+    const DB_URL = 'response.json';
+
     useEffect(() => {
         if (userName !== '') {
             setOpen(false);
@@ -21,10 +23,20 @@ export default function Dailog(props) {
     const [name, setName] = useState('');
 
     const handleClose = () => {
-        if (name !== '') {
-            setUserName(name);
-            setOpen(false);
+        const checkUser = () => {
+            fetch(DB_URL)
+                .then(res => {
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.isValid) {
+                        console.log(data.isValid);
+                        setUserName(name);
+                        setOpen(false);
+                    }
+                })
         }
+        checkUser();
     };
 
     return (
