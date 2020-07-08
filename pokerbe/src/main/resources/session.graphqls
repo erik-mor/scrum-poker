@@ -1,0 +1,14 @@
+type Query {
+    sessions: [Session]
+}
+
+type Session {
+    id: ID!,
+    name: String!
+}
+
+type Mutation {
+    newSession(name: String): Session!
+    deleteSession(id: ID!): Boolean
+    updateSession(id: ID!, name: String!): Session!
+}

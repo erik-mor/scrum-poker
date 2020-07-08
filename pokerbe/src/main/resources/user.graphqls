@@ -1,0 +1,17 @@
+extend type Query {
+    users(sessionId: ID!): [User]
+    user(id: ID!): User
+}
+
+type User {
+    id: ID!
+    sessionId: ID!
+    name: String!
+    vote: String
+}
+
+extend type Mutation {
+    newUser(sessionId: ID!, name: String!): User!
+    deleteUser(id: ID!): Boolean
+    updateUser(id: ID!, name: String!, vote: String): User!
+}
