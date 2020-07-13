@@ -106,8 +106,8 @@ const SessionDetail = ({ match }) => {
             setCards(cards.map(card => {
                 card.isSet = false; 
                 return card;
-            }));       
-
+            }));   
+            // TODO : on show -> disable klikani na karty    
         }
     }
 
@@ -120,7 +120,7 @@ const SessionDetail = ({ match }) => {
             <Button ref={btn} variant="primary" onClick={handleClick} disabled={!isMaster}>Show cards</Button>
 
             <div style={{ display: "flex", justifyContent: "left", marginTop: "40px" }}>
-            <GameCards display={!show} sendVote={sendVote} cards={cards} />
+            <GameCards display={true} sendVote={sendVote} cards={cards} />
             </div>
 
             <Dialog />
