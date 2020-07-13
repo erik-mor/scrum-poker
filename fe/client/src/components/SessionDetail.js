@@ -6,6 +6,7 @@ import PlayerCards from './PlayerCards'
 import GameCards from './GameCards'
 import Button from 'react-bootstrap/Button';
 import { ShowContext, ShowProvider } from './ShowContext'
+import { CardContext } from './CardContext'
 
 
 let socket;
@@ -18,18 +19,7 @@ const SessionDetail = ({ match }) => {
     const [name, setName] = useContext(UserContext);
     const [sessionId, setSessionId] = useState('');
     const [users, setUsers] = useState([]);
-    const [cards, setCards] = useState([
-        {
-           id: 1,
-           value: "1",
-           isSet: false
-        }, 
-        {
-            id: 2,
-            value: "2",
-            isSet: false
-        }
-    ]);
+    const [cards, setCards] = useContext(CardContext);
 
     const ENDPOINT = 'localhost:5000';
 
