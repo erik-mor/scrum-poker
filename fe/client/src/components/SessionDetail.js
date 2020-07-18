@@ -120,7 +120,7 @@ const SessionDetail = ({ match }) => {
             <Button ref={btn} variant="primary" onClick={handleClick} disabled={!isMaster}>Show cards</Button>
 
             <div style={{ display: "flex", justifyContent: "left", marginTop: "40px" }}>
-            <GameCards display={true} sendVote={sendVote} cards={cards} />
+            <GameCards sendVote={sendVote} cards={cards} disabled={show}/>
             </div>
 
             <Dialog />

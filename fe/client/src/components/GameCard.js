@@ -1,11 +1,11 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
 
-const CreatePlayerCard = (props) => {
+const GameCard = (props) => {
 
     return(
       <div>
-        <Card bg={props.isSet ? "primary" : "light"} onClick={props.sendVote.bind(this, props.value)} border="primary" style={{ width: '3rem', height: '5rem', margin: "8px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <Card bg={props.isSet ? "primary" : "light"} onClick={props.disabled ? null : props.sendVote.bind(this, props.value)} border="primary" style={{ width: '3rem', height: '5rem', margin: "8px", display: "flex", justifyContent: "center", alignItems: "center" }}>
         <Card.Body>
           <Card.Text>
             {props.value}
@@ -17,4 +17,4 @@ const CreatePlayerCard = (props) => {
         )
 }
 
-export default CreatePlayerCard;
+export default GameCard;

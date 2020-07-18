@@ -1,16 +1,10 @@
 import React from 'react';
 import Card from './GameCard';
 
-const PlayerCards = (props) => {
-    if (props.display) {
-        return props.cards.map(card => (
-            <Card sendVote={props.sendVote} key={card.id} value={card.value} isSet={card.isSet}/>
-        ));   
-    } else {
-        return (
-            <React.Fragment/>
-        )
-    }
+const GameCard = (props) => {
+    return props.cards.map(card => (
+        <Card disabled={props.disabled} sendVote={props.sendVote} key={card.id} value={card.value} isSet={card.isSet}/>
+    ));   
 }
 
-export default PlayerCards;
+export default GameCard;
