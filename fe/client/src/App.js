@@ -1,7 +1,7 @@
 import React from "react";
 import CreateSessionForm from "./components/CreateSessionForm";
 import SessionDetail from "./components/SessionDetail";
-import Nav from "./components/Nav/Nav";
+import Navigation from "./components/Navigation/Navigation";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { SessionProvider } from "./components/SessionContext";
 import { UserProvider } from "./components/UserContext";
@@ -16,7 +16,7 @@ const App = () => {
           <ShowProvider>
             <CardProvider>
               <div className="App">
-                <Nav />
+                <Navigation />
                 <div className="container">
                   <Route
                     path="/"

@@ -7,19 +7,43 @@ import GameCards from "./GameCards";
 import Button from "react-bootstrap/Button";
 import { ShowContext, ShowProvider } from "./ShowContext";
 import { CardContext } from "./CardContext";
+import SettingsIcon from "@material-ui/icons/Settings";
+import SessionSettings from "./SessionSettings";
 
 let socket;
 
 const SessionDetail = ({ match }) => {
   const btn = useRef();
+  const [sessionSettingsOpen, setSessionSettingsOpen] = useState(false);
+  const [sessionName, setSessionName] = useState("");
   const [isMaster, setIsMaster] = useState(false);
   const [show, setShow] = useContext(ShowContext);
   const [name, setName] = useContext(UserContext);
   const [sessionId, setSessionId] = useState("");
   const [users, setUsers] = useState([]);
-  const [cards, setCards] = useContext(CardContext);
+  const [cards, setCards] = useState([]);
+  const [cardSets, setCardSets] = useContext(CardContext);
 
   const ENDPOINT = "localhost:5000";
+
+  useEffect(() => {
+    const id = match.params.id;
+    fetch("http://localhost:8080/graphql", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: `{ session(id: "${id}") { cards, name } }`,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        const cardValues = cardSets.filter(
+          (set) => set.id === parseInt(res.data.session.cards)
+        )[0].cards;
+        setCards(cardValues);
+        setSessionName(res.data.session.name);
+      });
+  }, [cardSets]);
 
   useEffect(() => {
     const id = match.params.id;
@@ -28,7 +52,6 @@ const SessionDetail = ({ match }) => {
     if (name !== "") {
       socket = io(ENDPOINT);
       socket.emit("join", { name, id });
-      console.log(socket);
 
       return () => {
         socket.emit("disconnect");
@@ -52,26 +75,32 @@ const SessionDetail = ({ match }) => {
       socket.on("onShow", () => {
         btn.current.innerText = "Create a new game";
         setShow(true);
+        setCards(
+          cards.map((card) => {
+            card.isSet = false;
+            return card;
+          })
+        );
       });
 
       socket.on("isMaster", () => {
         setIsMaster(true);
       });
     }
-  }, [name]);
+  }, [name, cards]);
 
   const updateGameCards = (currentUsers) => {
     const user = currentUsers.find((user) => user.name === name);
-    setCards(
-      cards.map((card) => {
-        if (card.value === user.vote) {
-          card.isSet = true;
-        } else {
-          card.isSet = false;
-        }
-        return card;
-      })
-    );
+    // setCards(
+    //   cards.map((card) => {
+    //     if (card.value === user.vote) {
+    //       card.isSet = true;
+    //     } else {
+    //       card.isSet = false;
+    //     }
+    //     return card;
+    //   })
+    // );
   };
 
   const sendVote = (value) => {
@@ -85,7 +114,6 @@ const SessionDetail = ({ match }) => {
         return card;
       })
     );
-
     socket.emit("vote", { value, id: sessionId });
   };
 
@@ -94,20 +122,25 @@ const SessionDetail = ({ match }) => {
       socket.emit("create");
     } else {
       socket.emit("show");
-      setCards(
-        cards.map((card) => {
-          card.isSet = false;
-          return card;
-        })
-      );
-      // TODO : on show -> disable klikani na karty
     }
   };
 
-  console.log(cards);
+  const handleClose = () => {
+    setSessionSettingsOpen(false);
+  };
+
+  const sessionSettings = (e) => {
+    setSessionSettingsOpen(true);
+  };
 
   return (
     <div>
+      <div style={{ cursor: "pointer" }} onClick={sessionSettings}>
+        <h3 style={{ textAlign: "center", paddingTop: "20px" }}>
+          {" "}
+          {sessionName} <SettingsIcon />
+        </h3>
+      </div>
       <div
         style={{
           display: "flex",
@@ -134,6 +167,12 @@ const SessionDetail = ({ match }) => {
       </div>
 
       <Dialog />
+
+      <SessionSettings
+        users={users}
+        onClose={handleClose}
+        open={sessionSettingsOpen}
+      />
     </div>
   );
 };

@@ -19,4 +19,8 @@ class User (
 
     @Column(name = "vote")
     var vote: String? = null
+
+    @Column(name = "has_voted")
+    var hasVoted: Boolean = false
+
 }

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component
 class SessionMutationResolver (
         val sessionRepository: SessionRepository
 ): GraphQLMutationResolver{
-    fun newSession(name: String): Session {
-        return sessionRepository.save(Session(name))
+    fun newSession(name: String, cards: Int): Session {
+        return sessionRepository.save(Session(name, cards))
     }
 
     fun updateSession(id: Long, name: String): Session {

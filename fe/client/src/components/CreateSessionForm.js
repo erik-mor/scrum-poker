@@ -11,42 +11,26 @@ const CreateSessionForm = () => {
   const [redirect, setRedirect] = useState(false);
   const [name, setName] = useState("");
   const [id, setId] = useState("");
-  const [sessions, setSessions] = useContext(SessionContext);
-  const [cardSets, setCardSets] = useState([
-    { cards: [1, 3, 5, 8, 13, 21, 34, 55] },
-    { cards: [1, 2, 3, 4, 5] },
-    { cards: ["XS", "S", "M", "L", "XL", "XXL"] },
-  ]);
-  const [cards, setCards] = useContext(CardContext);
-
-  useEffect(() => {
-    const cardMenuValues = cardSets.map((cardSet, index) => {
-      return {
-        id: index,
-        cards: cardSet.cards.map((card, index) => {
-          return {
-            id: index,
-            value: card,
-            isSet: false,
-          };
-        }),
-      };
-    });
-    setCardSets(cardMenuValues);
-    setCards(cardMenuValues[0].cards);
-  }, []);
+  const [cards, setCards] = useState(0);
+  const [cardSets, setCardSets] = useContext(CardContext);
 
   const handleSumbit = (e) => {
     e.preventDefault();
 
-    const newId = uuid();
-    setId(newId);
-
-    setSessions((prev) => [...prev, { id: newId, name: name }]);
+    fetch("http://localhost:8080/graphql", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: `mutation { newSession(name: "${name}", cards: ${cards}) { id } }`,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res.data);
+        setId(res.data.newSession.id);
+      });
 
     setRedirect(true);
-
-    //TODO call db
   };
 
   const onChange = (e) => {
@@ -54,10 +38,7 @@ const CreateSessionForm = () => {
   };
 
   const chooseCards = (e) => {
-    const cardValues = cardSets.filter(
-      (set) => set.id === parseInt(e.target.value)
-    )[0].cards;
-    setCards(cardValues);
+    setCards(e.target.value);
   };
 
   console.log(cards);
@@ -67,7 +48,7 @@ const CreateSessionForm = () => {
   } else {
     return (
       <div>
-        <Form>
+        <Form style={{ paddingTop: "40px" }}>
           <Form.Group controlId="formBasicEm">
             <Form.Label>Session Name: </Form.Label>
             <Form.Control

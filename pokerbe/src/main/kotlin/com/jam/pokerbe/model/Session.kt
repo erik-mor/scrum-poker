@@ -6,7 +6,10 @@ import javax.persistence.*
 @Table(name = "sessions")
 class Session (
         @Column(name = "name")
-        var name: String
+        var name: String,
+
+        @Column(name = "cards")
+        val cards: Int
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

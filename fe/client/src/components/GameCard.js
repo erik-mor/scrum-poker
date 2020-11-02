@@ -9,6 +9,7 @@ const GameCard = (props) => {
         onClick={props.disabled ? null : props.sendVote.bind(this, props.value)}
         border="primary"
         style={{
+          cursor: "pointer",
           width: "3rem",
           height: "5rem",
           margin: "8px",

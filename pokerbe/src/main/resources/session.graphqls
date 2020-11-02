@@ -1,14 +1,16 @@
 type Query {
     sessions: [Session]
+    session(id: ID!): Session
 }
 
 type Session {
     id: ID!,
-    name: String!
+    name: String!,
+    cards: Int!
 }
 
 type Mutation {
-    newSession(name: String): Session!
+    newSession(name: String, cards: Int): Session!
     deleteSession(id: ID!): Boolean
     updateSession(id: ID!, name: String!): Session!
 }

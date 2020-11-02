@@ -1,6 +1,7 @@
 const express = require("express");
 const socketio = require("socket.io");
 const http = require("http");
+const fetch = require("node-fetch");
 
 const PORT = process.env.PORT || 5000;
 
@@ -23,7 +24,34 @@ io.on("connection", (socket) => {
   socket.on("join", ({ name, id }) => {
     console.log(name, id);
 
+    // new user
+
+    fetch("http://localhost:8080/graphql", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: `mutation { newUser(sessionId: "${id}", name: "${name}") { id } }`,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res.data);
+      });
+
     addUser(socket.id, name, id);
+
+    // query users
+    fetch("http://localhost:8080/graphql", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: `{ users(sessionId: "${id}") { id, name, vote, hasVoted } }`,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res.data.users.length);
+      });
 
     const users = getUsersInRoom(id);
 
@@ -37,14 +65,17 @@ io.on("connection", (socket) => {
   });
 
   socket.on("vote", (vote) => {
+    // vote
     setVote(socket.id, vote.value);
 
     io.to(vote.id).emit("connectedUsers", { users: getUsersInRoom(vote.id) });
   });
 
   socket.on("create", () => {
+    // user
     const user = getUser(socket.id);
 
+    // users
     getUsersInRoom(user.room).map((user) => {
       user.hasVoted = false;
       user.vote = null;

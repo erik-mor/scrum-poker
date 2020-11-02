@@ -11,6 +11,7 @@ const CreatePlayerCard = (props) => {
         bg={show ? "light" : props.hasVoted ? "primary" : "light"}
         border="primary"
         style={{
+          cursor: "pointer",
           width: "4rem",
           height: "6rem",
           margin: "30px 5px 5px 5px",
